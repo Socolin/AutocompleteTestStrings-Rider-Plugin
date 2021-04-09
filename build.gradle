@@ -160,3 +160,18 @@ prepareSandbox {
         })
     }
 }
+
+publishPlugin {
+    dependsOn buildPlugin
+
+    token intellijPublishToken
+    channels(!version.contains("-") ? 'Stable' : 'EAP')
+
+    doLast {
+        exec {
+            executable "dotnet"
+            args "nuget","push","output/${DotnetPluginId}.${version}.nupkg","--api-key",token,"--source","https://plugins.jetbrains.com"
+            workingDir rootDir
+        }
+    }
+}
