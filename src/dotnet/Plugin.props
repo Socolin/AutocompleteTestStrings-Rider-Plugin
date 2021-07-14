@@ -3,7 +3,12 @@
     <SdkVersion>2021.1.0</SdkVersion>
 
     <Title>AutocompleteTestStrings</Title>
-    <Description>Description</Description>
+    <Description>
+        <![CDATA[
+<p>Add autocomplete on strings for tests. Following pattern <span style="font-family: monospace">"some-..."</span></p>
+<p>For example <span style="font-family: monospace">string customerName = "</span> with autocomplete <span style="font-family: monospace">"some-customer-name"</span></p>
+]]>
+    </Description>
 
     <Authors>Bertrand Provost</Authors>
     <Copyright>Copyright $([System.DateTime]::Now.Year) Maintainers of AutocompleteTestStrings</Copyright>
