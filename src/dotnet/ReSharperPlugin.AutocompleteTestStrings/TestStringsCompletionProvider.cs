@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
@@ -40,6 +42,9 @@ namespace ReSharperPlugin.AutocompleteTestStrings.bin
             if (cSharpGenericToken.Parent?.Parent is IExpressionInitializer expressionInitializer)
                 return AutoCompleteExpressionInitializer(context, collector, expressionInitializer);
 
+            if (cSharpGenericToken.Parent?.Parent is ICSharpArgument cSharpArgument)
+                return AutoCompleteCharpArgument(context, collector, cSharpArgument);
+
             return false;
         }
 
@@ -54,6 +59,24 @@ namespace ReSharperPlugin.AutocompleteTestStrings.bin
             if (!(expressionInitializer.Parent is IDeclaration declaration))
                 return false;
             AddLookupItem(context, collector, declaration.DeclaredName);
+            return true;
+        }
+
+        private bool AutoCompleteCharpArgument(CSharpCodeCompletionContext context, IItemsCollector collector, ICSharpArgument cSharpArgument)
+        {
+            var cSharpInvocationReference = cSharpArgument.Invocation?.Reference;
+            if (cSharpInvocationReference == null)
+                return false;
+            var resolveResult = cSharpInvocationReference.Resolve();
+            if (resolveResult.Result.DeclaredElement is not IMethod method)
+                return false;
+
+            var parameterIndex = cSharpArgument.ContainingArgumentList.Arguments.IndexOf(cSharpArgument);
+            if (parameterIndex >= method.Parameters.Count)
+                return false;
+
+            AddLookupItem(context, collector, method.Parameters[parameterIndex].ShortName);
+
             return true;
         }
 
