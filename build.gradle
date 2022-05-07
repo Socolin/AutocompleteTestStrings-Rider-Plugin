@@ -1,27 +1,18 @@
 // Reference https://www.jetbrains.org/intellij/sdk/docs/tutorials/build_system/gradle_guide.html
 import org.apache.tools.ant.taskdefs.condition.Os
 
-buildscript {
-    repositories {
-        maven { url 'https://www.myget.org/F/rd-snapshots/maven/' }
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("com.jetbrains.rd:rd-gen:0.201.57") // https://github.com/JetBrains/rd#rdgen
-    }
-}
-
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
-    id 'org.jetbrains.intellij' version '0.4.19' // https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20'
+    id 'org.jetbrains.intellij' version '1.5.3'     // https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id 'com.jetbrains.rdgen' version '2022.1.2'    // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
+    id 'me.filippov.gradle.jvm.wrapper' version '0.10.0'
 }
 
 ext {
     isWindows = Os.isFamily(Os.FAMILY_WINDOWS)
     rdLibDirectory = {
-        new File(intellij.ideaDependency.classes, "lib/rd")
+        new File(setupDependencies.idea.get().classes, "lib/rd")
     }
 }
 
@@ -43,7 +34,8 @@ if (ext.has("password")) intellij.publish.password = ext.password
 
 sourceSets {
     main {
-        java.srcDir 'src/rider/main/kotlin'
+        java.srcDir 'src/rider/main/java'
+        kotlin.srcDir 'src/rider/main/kotlin'
         resources.srcDir 'src/rider/main/resources'
     }
 }
@@ -150,7 +142,7 @@ prepareSandbox {
 
     dllFiles.forEach({ f ->
         def file = file(f)
-        from(file, { into "${intellij.pluginName}/dotnet" })
+        from(file, { into "${intellij.pluginName.get()}/dotnet" })
     })
 
     doLast {
@@ -162,16 +154,5 @@ prepareSandbox {
 }
 
 publishPlugin {
-    dependsOn buildPlugin
-
-    token intellijPublishToken
-    channels(!version.contains("-") ? 'Stable' : 'EAP')
-
-    doLast {
-        exec {
-            executable "dotnet"
-            args "nuget","push","output/${DotnetPluginId}.${version}.nupkg","--api-key",token,"--source","https://plugins.jetbrains.com"
-            workingDir rootDir
-        }
-    }
+    token.set(System.getenv("ORG_GRADLE_PROJECT_intellijPublishToken"))
 }

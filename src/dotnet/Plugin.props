@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <SdkVersion>2021.3.0-eap01</SdkVersion>
+    <SdkVersion>2022.1.0</SdkVersion>
 
     <Title>AutocompleteTestStrings</Title>
     <Description>
