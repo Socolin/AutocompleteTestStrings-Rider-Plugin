@@ -30,7 +30,9 @@ namespace ReSharperPlugin.AutocompleteTestStrings.bin
                 || cSharpGenericToken.NodeType != CSharpTokenType.STRING_LITERAL_REGULAR)
                 return false;
 
-            if (cSharpGenericToken.GetContainingTypeDeclaration()?.NameIdentifier.Name.ToLowerInvariant().Contains("tests") != true)
+            if (cSharpGenericToken.GetContainingTypeDeclaration()?.NameIdentifier.Name.ToLowerInvariant().Contains("tests") != true
+                && cSharpGenericToken.GetContainingNamespaceDeclaration()?.QualifiedName.ToLowerInvariant().Contains(".tests.") != true
+                && cSharpGenericToken.GetContainingNamespaceDeclaration()?.QualifiedName.ToLowerInvariant().Contains(".test.") != true)
                 return false;
 
             if (cSharpGenericToken.Parent?.Parent is INamedMemberInitializer namedMemberInitializer)
