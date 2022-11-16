@@ -4,9 +4,8 @@ import org.apache.tools.ant.taskdefs.condition.Os
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.7.10'
-    id 'org.jetbrains.intellij' version '1.7.0'     // https://github.com/JetBrains/gradle-intellij-plugin/releases
-    id 'com.jetbrains.rdgen' version '2022.3.1'    // https://github.com/JetBrains/rd/releases
-    id 'me.filippov.gradle.jvm.wrapper' version '0.10.0'
+    id 'org.jetbrains.intellij' version '1.9.0'     // https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id 'com.jetbrains.rdgen' version '2022.3.4'     // https://github.com/JetBrains/rd/releases
 }
 
 ext {
@@ -22,15 +21,12 @@ repositories {
 }
 
 wrapper {
-    gradleVersion = '6.1.1'
+    gradleVersion = '7.1'
     distributionType = Wrapper.DistributionType.ALL
     distributionUrl = "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
 version = ext.PluginVersion
-
-if (ext.has("username")) intellij.publish.username = ext.username
-if (ext.has("password")) intellij.publish.password = ext.password
 
 sourceSets {
     main {
@@ -44,33 +40,66 @@ compileKotlin {
     kotlinOptions { jvmTarget = "1.8" }
 }
 
-task compileDotNet {
+task setBuildTool {
     doLast {
+        ext.args = []
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream()
+        if (isWindows) {
+            exec {
+                executable "${rootDir}\\tools\\vswhere.exe"
+                args '-latest','-property','installationPath','-products','*'
+                standardOutput = stdout
+                workingDir rootDir
+            }
+            List<String> files = new FileNameFinder().getFileNames("${stdout.toString().trim()}\\MSBuild", "**/MSBuild.exe")
+            ext.executable = files.get(0)
+            ext.args << "/v:minimal"
+        } else {
+            ext.executable = "dotnet"
+            ext.args << "msbuild"
+        }
+        ext.args << "${DotnetSolution}"
+        ext.args << "/p:Configuration=${BuildConfiguration}"
+        ext.args << "/p:HostFullIdentifier="
+    }
+}
+
+task compileDotNet {
+    dependsOn setBuildTool
+    doLast {
+        def arguments = setBuildTool.args.clone()
+        arguments << "/t:Restore;Rebuild"
         exec {
-            executable "dotnet"
-            args "msbuild","/t:Restore;Rebuild","${DotnetSolution}","/p:Configuration=${BuildConfiguration}","/p:HostFullIdentifier="
+            executable setBuildTool.executable
+            args arguments
             workingDir rootDir
         }
     }
 }
 
 buildPlugin {
-    outputs.upToDateWhen { false }
     doLast {
         copy {
             from "${buildDir}/distributions/${rootProject.name}-${version}.zip"
             into "${rootDir}/output"
         }
 
+        // TODO: See also org.jetbrains.changelog: https://github.com/JetBrains/gradle-changelog-plugin
         def changelogText = file("${rootDir}/CHANGELOG.md").text
         def changelogMatches = changelogText =~ /(?s)(-.+?)(?=##|$)/
         def changeNotes = changelogMatches.collect {
-            it[1].replaceAll(/(?s)- /, "\u2022 ").replaceAll(/`/, "").replaceAll(/,/, "%2C")
+            it[1].replaceAll(/(?s)- /, "\u2022 ").replaceAll(/`/, "").replaceAll(/,/, "%2C").replaceAll(/;/, "%3B")
         }.take(1).join("")
 
+        def arguments = setBuildTool.args.clone()
+        arguments << "/t:Pack"
+        arguments << "/p:PackageOutputPath=${rootDir}/output"
+        arguments << "/p:PackageReleaseNotes=${changeNotes}"
+        arguments << "/p:PackageVersion=${version}"
         exec {
-            executable "dotnet"
-            args "msbuild","/t:Pack","${DotnetSolution}","/p:Configuration=${BuildConfiguration}","/p:HostFullIdentifier=","/p:PackageOutputPath=${rootDir}/output","/p:PackageReleaseNotes=${changeNotes}","/p:PackageVersion=${version}"
+            executable setBuildTool.executable
+            args arguments
+            workingDir rootDir
         }
     }
 }
@@ -85,11 +114,16 @@ intellij {
 }
 
 runIde {
-    // TODO: adapt runtime if necessary
-    // jbrVersion("jbr_jcef-11_0_6b765.40") // https://confluence.jetbrains.com/display/JBR/Release+notes
-}
+    // Match Rider's default heap size of 1.5Gb (default for runIde is 512Mb)
+    maxHeapSize = "1500m"
 
-apply plugin: 'com.jetbrains.rdgen'
+    // Rider's backend doesn't support dynamic plugins. It might be possible to work with auto-reload of the frontend
+    // part of a plugin, but there are dangers about keeping plugins in sync
+    autoReloadPlugins = false
+
+    // gradle-intellij-plugin will download the default version of the JBR for the snapshot. Update if required
+    // jbrVersion = "jbr_jcef-11_0_6b765.40" // https://confluence.jetbrains.com/display/JBR/Release+notes
+}
 
 rdgen {
     def modelDir = new File(rootDir, "protocol/src/main/kotlin/model")
