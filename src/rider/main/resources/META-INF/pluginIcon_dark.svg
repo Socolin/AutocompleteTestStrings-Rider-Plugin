@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="128.0px"
+   height="128.0px"
+   viewBox="0 0 128.0 128.0"
+   version="1.1"
+   id="SVGRoot"
+   sodipodi:docname="pluginIcon_dark.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview829"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="3.7119898"
+     inkscape:cx="33.001168"
+     inkscape:cy="88.766407"
+     inkscape:window-width="1918"
+     inkscape:window-height="1058"
+     inkscape:window-x="1920"
+     inkscape:window-y="1100"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid892" />
+    <sodipodi:guide
+       position="-20,64"
+       orientation="0,1"
+       id="guide12611"
+       inkscape:label=""
+       inkscape:locked="false"
+       inkscape:color="rgb(0,0,255)" />
+  </sodipodi:namedview>
+  <defs
+     id="defs824" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:37.3333px;line-height:1.25;font-family:Je;-inkscape-font-specification:Je;letter-spacing:0px;word-spacing:0px"
+       x="8.2758722"
+       y="76.52607"
+       id="text3119"><tspan
+         sodipodi:role="line"
+         id="tspan3117"
+         x="8.2758722"
+         y="76.52607"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono';baseline-shift:baseline"><tspan
+           style="baseline-shift:baseline;fill:#afb1b3;fill-opacity:1"
+           id="tspan55350">some-</tspan><tspan
+           style="baseline-shift:baseline;fill:#f0a732;fill-opacity:1"
+           id="tspan36701" /></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:37.3333px;line-height:1.25;font-family:Je;-inkscape-font-specification:Je;letter-spacing:0px;word-spacing:0px"
+       x="0.11152571"
+       y="72.46608"
+       id="text82198"><tspan
+         sodipodi:role="line"
+         id="tspan82196"
+         x="0.11152571"
+         y="72.46608"
+         style="font-size:37.3333px;fill:#eda200;fill-opacity:1">&quot;</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:37.3333px;line-height:1.25;font-family:Je;-inkscape-font-specification:Je;letter-spacing:0px;word-spacing:0px"
+       x="111.26736"
+       y="72.375893"
+       id="text82198-31"><tspan
+         sodipodi:role="line"
+         id="tspan82196-1"
+         x="111.26736"
+         y="72.375893"
+         style="font-size:37.3333px;fill:#eda200;fill-opacity:1">&quot;</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:48px;line-height:1.25;font-family:Je;-inkscape-font-specification:Je;letter-spacing:0px;word-spacing:0px"
+       x="100.06056"
+       y="124.02548"
+       id="text82198-3"><tspan
+         sodipodi:role="line"
+         id="tspan82196-6"
+         x="100.06056"
+         y="124.02548"
+         style="font-size:48px;fill:#eda200;fill-opacity:1" /></text>
+  </g>
+</svg>
